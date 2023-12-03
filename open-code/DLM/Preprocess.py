@@ -97,7 +97,7 @@ def series_to_supervised(data, n_in=1, n_out=1, dropnan=True):
   
 if __name__ == '__main__':
     
-    data = pd.read_csv(".\\dataset\\Macau2018.csv")
+    data = pd.read_csv("..\\..\\open-data\\Macau2018\\Macau2018.csv")
     data.drop(columns=["date","arrival mainland"],inplace=True)
     data.fillna(0,inplace=True)
     
