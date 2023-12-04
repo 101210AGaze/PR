@@ -5,7 +5,7 @@ import numpy  as np
 from numpy import concatenate
 from math import sqrt
 import pickle
-
+import chardet
 from sklearn.preprocessing import MinMaxScaler
 
 from minepy import MINE
@@ -32,7 +32,8 @@ def micfliter(data,rate):
         micmatrix.append(micResult)
         
     micmatrix = pd.DataFrame(micmatrix,columns=data.columns)
-    upper = micmatrix.where(np.triu(np.ones(micmatrix.shape), k=1).astype(np.bool))
+    upper = micmatrix.where(np.triu(np.ones(micmatrix.shape), k=1).astype(bool))
+
     to_drop = [column for column in upper.columns if any(upper[column]>rate)]
     
     return to_drop
@@ -93,11 +94,19 @@ def series_to_supervised(data, n_in=1, n_out=1, dropnan=True):
     agg.drop(agg.columns[-(df.shape[1]-1):],axis = 1,inplace=True)
     return agg    
  
-  
+
+def detect_encoding(file_path):
+    with open(file_path, 'rb') as f:
+        result = chardet.detect(f.read())
+    return result['encoding']
   
 if __name__ == '__main__':
-    
-    data = pd.read_csv("..\\..\\open-data\\Macau2018\\Macau2018.csv")
+    file_path = "..\\..\\open-data\\Macau2018\\Macau2018.csv"
+    encoding = detect_encoding(file_path)
+
+
+    data = pd.read_csv("..\\..\\open-data\\Macau2018\\Macau2018.csv", encoding=encoding)
+
     data.drop(columns=["date","arrival mainland"],inplace=True)
     data.fillna(0,inplace=True)
     
